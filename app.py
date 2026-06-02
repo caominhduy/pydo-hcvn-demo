@@ -198,7 +198,7 @@ def extract_pid(stats_url: str) -> str:
 
 def player_image_url(name: str) -> str:
     pid = extract_pid(df.loc[name, "stats_url"])
-    return f"images/{pid}.png" if pid else ""
+    return f"https://raw.githubusercontent.com/caominhduy/pydo-hcvn-demo/refs/heads/main/images/{pid}.png" if pid else ""
 
 
 def player_image_html(name: str, width: int = 80) -> str:
