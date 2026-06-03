@@ -305,73 +305,84 @@ With hundreds or thousands of available players, the number of possible squads b
         """
     )
 
-with st.expander("❓ Soccer Squad Optimization: A Moneyball-Inspired Decision Optimization Problem", expanded=False):
+with st.expander("🎯 From Moneyball to Consumer Finance: The Same Optimization Problem", expanded=False):
     st.markdown(
         """
-Building a soccer squad is a compelling demonstration of what **PyDO** is designed to solve. Clubs operate under strict constraints—*transfer budgets, wage caps, squad size limits, and positional requirements*—while trying to maximize on-field performance.
+The movie [Moneyball](https://www.imdb.com/title/tt1210166) popularized a simple idea:
 
-Inspired by the **Moneyball philosophy**, the goal is not to acquire the highest-rated players individually, but to identify the **combination of players** that creates the strongest team as a whole. An undervalued player may deliver more performance per dollar than a superstar, allowing resources to be allocated more efficiently across the squad.
+> **Winning is not about acquiring the best individuals. It's about finding the combination of assets that produces the best overall outcome within a limited budget.**
 
-In this example, player attributes are transformed into football-specific metrics such as:
+That idea is exactly what **Decision Optimization** is about.
 
-- **Attacking Quality**
-- **Midfield Creation**
-- **Ball Progression**
-- **Defensive Strength**
-- **Goalkeeping Ability**
+Whether you are building a soccer squad or optimizing a cross-sell cash loan campaign at Home Credit Vietnam, the underlying problem is the same:
 
-These metrics are then aggregated into estimates of:
+| ⚽ Moneyball Soccer Squad | 💰 Cross-Sell Cash Loan |
+|--------------------------|-------------------------|
+| Players | Existing customers |
+| Maximize Goal Difference (GF − GA) | Maximize Expected Profit |
+| Transfer budget | Business KPIs |
+| Position requirements | Segment/channel quotas |
+| Left/right foot balance | Sensitivity to product's parameters |
+| Squad size limit | Volume limit |
+| Player attributes | Customer features & model scores |
 
-- **GF (Goals For)** — expected goals scored
-- **GA (Goals Against)** — expected goals conceded
+### ⚽ Soccer Example
 
-The optimizer's objective is simple:
+In the soccer demo, PyDO evaluates thousands of players and selects the squad that maximizes expected performance.
 
-> **Maximize Expected Goal Difference = GF − GA**
+The optimizer balances:
 
-while satisfying all roster, budget, and squad-building constraints.
+- Attacking quality (Goals For)
+- Defensive quality (Goals Against)
+- Transfer budget
+- Positional requirements
+- Squad composition
 
-This makes soccer squad construction an ideal showcase for **PyDO**. It combines:
+A superstar striker may score more goals, but his cost might prevent strengthening the defense elsewhere. The optimal squad is therefore often **not** the collection of the highest-rated players.
 
-- A clear business objective
-- Limited resources
-- Multiple competing trade-offs
-- Interpretable constraints
-- Millions of possible decisions
+### 💰 Home Credit Example
 
-Rather than selecting players manually, PyDO systematically evaluates vast numbers of squad combinations to identify the roster that delivers the highest expected performance within the available resources.
+The exact same logic applies to cross-sell optimization.
+
+The objective is to maximize:
+
+> **Interest Income + Fee Income − Credit Losses − Funding Cost − Operational Cost...**
+
+while satisfying constraints such as:
+
+- Risk appetite by customer segment
+- Acquisition channel requirement
+- Budget limits
+- Regulatory requirements
+- Portfolio concentration limits
+
+A customer with the highest response probability is not necessarily the most profitable customer if they also carry high default risk or consume scarce channel capacity. Similarly, a higher price point is not necessarily a better decision if client does not agree on and take the loan.
         """
     )
 
-with st.expander("ℹ️ What is PyDO?", expanded=False):
+with st.expander("🚀 Why PyDO?", expanded=False):
     st.markdown(
         """
-**PyDO (Pythonic Decision Optimizer)** is an open-source framework, powered by Pyomo and Python, solving business decision problems using mathematical optimization.
+Historically, organizations have used commercial platforms such as **FICO Decision Optimizer** to solve these problems.
 
-Instead of manually evaluating thousands or millions of possible choices, users define:
+PyDO (Pythonic Decision Optimizer) demonstrates that the same optimization methodology can be implemented using open-source technologies such as Python, Pyomo, and SCIP. It is thus native, transparent, and accessible to data scientists and analysts.
 
-Decision variables — what can be chosen
-Objectives — what should be maximized or minimized
-Constraints — business rules that must be satisfied
+The result is a framework that can produce solutions comparable to commercial decision optimization platforms while remaining:
 
-PyDO then automatically finds the optimal solution using state-of-the-art optimization solvers.
+- ✅ Open-source
+- ✅ Transparent
+- ✅ Extensible
+- ✅ Cost-free
 
-The framework is inspired by commercial platforms such as FICO Decision Optimizer but is designed to be fully Python-native, transparent, and accessible to data scientists and analysts.
+Whether selecting a soccer squad or allocating a lending portfolio, the question is always the same:
 
-Typical use cases include:
-
-    - Credit and lending strategy optimization
-    - Marketing campaign selection
-    - Resource allocation
-    - Portfolio optimization
-    - Workforce planning
-    - Supply chain optimization
-    - Sports squad construction and roster management
+> **Given limited resources and many constraints, what combination of decisions creates the best overall outcome?**
 
 PyDO aims to bridge the gap between data science and decision science. While machine learning predicts what is likely to happen, PyDO determines what decision should be made to achieve the best outcome under real-world constraints.
+
+That is precisely the problem PyDO is built to solve.
         """
     )
-
 
 left, right = st.columns([1.8, 1])
 
