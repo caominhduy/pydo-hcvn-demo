@@ -240,7 +240,7 @@ def render_player_stats(name: str):
 # ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
-st.set_page_config(page_title="Optimization Demo", layout="wide")
+st.set_page_config(page_title="Optimization Demo", layout="wide", page_icon="./hcvn.ico")
 st.markdown(
     """
     <style>
