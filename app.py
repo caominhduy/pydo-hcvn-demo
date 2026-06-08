@@ -525,6 +525,9 @@ with right:
             return "∞"
         return f"${v/1_000_000:,.2f}M"
 
+    t_remaining_label = "∞" if st.session_state.transfer_budget == INFINITY_BUDGET else money(t_remaining)
+    s_remaining_label = "∞" if st.session_state.salary_budget == INFINITY_BUDGET else money(s_remaining)
+
     bcols = st.columns(2)
     with bcols[0]:
         st.markdown("**Transfer**")
@@ -532,7 +535,7 @@ with right:
         st.markdown(f"Used: {money(transfer_used)}")
         cls = "over" if t_over else "ok"
         st.markdown(
-            f"<div class='metric-big {cls}'>Remaining: {money(t_remaining)}</div>",
+            f"<div class='metric-big {cls}'>Remaining: {t_remaining_label}</div>",
             unsafe_allow_html=True,
         )
     with bcols[1]:
@@ -541,7 +544,7 @@ with right:
         st.markdown(f"Used: {money(salary_used)}")
         cls = "over" if s_over else "ok"
         st.markdown(
-            f"<div class='metric-big {cls}'>Remaining: {money(s_remaining)}</div>",
+            f"<div class='metric-big {cls}'>Remaining: {s_remaining_label}</div>",
             unsafe_allow_html=True,
         )
 
