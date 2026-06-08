@@ -117,9 +117,14 @@ def init_state():
     if "initialized" in st.session_state:
         return
     feas = opt_df[opt_df["feasible"] == True]  # noqa: E712
-    seed_row = feas.sample(1).iloc[0]
-    st.session_state.transfer_budget = int(seed_row["transfer_budget"])
-    st.session_state.salary_budget = int(seed_row["salary_budget"])
+    if len(feas) > 1:
+        seed_rows = feas.sample(2)
+        seed_row = seed_rows.iloc[0]
+        budget_row = seed_rows.iloc[1]
+    else:
+        seed_row = budget_row = feas.iloc[0]
+    st.session_state.transfer_budget = int(budget_row["transfer_budget"])
+    st.session_state.salary_budget = int(budget_row["salary_budget"])
     for s in SLOTS:
         st.session_state[f"slot_{s}"] = seed_row[s]
     st.session_state.initialized = True
@@ -261,6 +266,19 @@ st.markdown(
     .metric-big{font-size:34px;font-weight:700;}
     .over{color:#ff4d4f !important;}
     .ok{color:#52c41a;}
+    div[data-testid="stVerticalBlock"] > div:nth-of-type(3) button[kind="primary"],
+    div[data-testid="stVerticalBlock"] > div:nth-of-type(4) button[kind="primary"]{
+        font-size:28px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+        min-height:44px;
+    }
+    div[data-testid="stVerticalBlock"] > div:nth-of-type(3) button[kind="primary"] p,
+    div[data-testid="stVerticalBlock"] > div:nth-of-type(4) button[kind="primary"] p{
+        font-size:28px !important;
+        font-weight:700 !important;
+        line-height:1 !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -467,6 +485,7 @@ with right:
         st.button(
             "∞",
             key="transfer_infinity",
+            type="primary",
             on_click=set_infinity_budget,
             args=("transfer_budget",),
             use_container_width=True,
@@ -484,6 +503,7 @@ with right:
         st.button(
             "∞",
             key="salary_infinity",
+            type="primary",
             on_click=set_infinity_budget,
             args=("salary_budget",),
             use_container_width=True,
@@ -499,6 +519,8 @@ with right:
     s_over = s_remaining < 0
 
     def money(v):
+        if v == INFINITY_BUDGET:
+            return "∞"
         return f"${v/1_000_000:,.2f}M"
 
     bcols = st.columns(2)
