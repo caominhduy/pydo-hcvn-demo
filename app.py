@@ -41,8 +41,9 @@ SLOTS = ["GK", "CB1", "CB2", "CB3", "CM1", "CM2", "CM3", "CM4", "CM5", "ST1", "S
 GK_PLAYERS = df[df["flag_goalkeeper"] == 1]["name"].tolist()
 OUTFIELD_PLAYERS = df[df["flag_goalkeeper"] == 0]["name"].tolist()
 
-TRANSFER_OPTIONS = list(range(5_000_000, 200_000_001, 5_000_000))
-SALARY_OPTIONS = list(range(1_000_000, 100_000_001, 1_000_000))
+INFINITY_BUDGET = 999_999_999
+TRANSFER_OPTIONS = list(range(5_000_000, 200_000_001, 5_000_000)) + [INFINITY_BUDGET]
+SALARY_OPTIONS = list(range(1_000_000, 100_000_001, 1_000_000)) + [INFINITY_BUDGET]
 
 
 # ---------------------------------------------------------------------------
@@ -116,9 +117,9 @@ def init_state():
     if "initialized" in st.session_state:
         return
     feas = opt_df[opt_df["feasible"] == True]  # noqa: E712
-    seed_row = feas.iloc[-1]
-    st.session_state.transfer_budget = random.choice(TRANSFER_OPTIONS)
-    st.session_state.salary_budget = random.choice(SALARY_OPTIONS)
+    seed_row = feas.sample(1).iloc[0]
+    st.session_state.transfer_budget = int(seed_row["transfer_budget"])
+    st.session_state.salary_budget = int(seed_row["salary_budget"])
     for s in SLOTS:
         st.session_state[f"slot_{s}"] = seed_row[s]
     st.session_state.initialized = True
@@ -142,6 +143,16 @@ def apply_team(row):
 
 def current_squad():
     return {s: st.session_state[f"slot_{s}"] for s in SLOTS}
+
+
+def budget_label(v: int) -> str:
+    if v == INFINITY_BUDGET:
+        return "∞"
+    return f"${v/1_000_000:.0f}M"
+
+
+def set_infinity_budget(key: str):
+    st.session_state[key] = INFINITY_BUDGET
 
 
 # ---------------------------------------------------------------------------
@@ -444,18 +455,39 @@ with right:
     # ---- Budgets ----
     st.subheader("Budgets")
 
-    st.select_slider(
-        "Transfer budget (USD)",
-        options=TRANSFER_OPTIONS,
-        key="transfer_budget",
-        format_func=lambda v: f"${v/1_000_000:.0f}M",
-    )
-    st.select_slider(
-        "Annual salary budget (USD)",
-        options=SALARY_OPTIONS,
-        key="salary_budget",
-        format_func=lambda v: f"${v/1_000_000:.0f}M",
-    )
+    transfer_cols = st.columns([5, 1])
+    with transfer_cols[0]:
+        st.select_slider(
+            "Transfer budget (USD)",
+            options=TRANSFER_OPTIONS,
+            key="transfer_budget",
+            format_func=budget_label,
+        )
+    with transfer_cols[1]:
+        st.button(
+            "∞",
+            key="transfer_infinity",
+            on_click=set_infinity_budget,
+            args=("transfer_budget",),
+            use_container_width=True,
+        )
+
+    salary_cols = st.columns([5, 1])
+    with salary_cols[0]:
+        st.select_slider(
+            "Annual salary budget (USD)",
+            options=SALARY_OPTIONS,
+            key="salary_budget",
+            format_func=budget_label,
+        )
+    with salary_cols[1]:
+        st.button(
+            "∞",
+            key="salary_infinity",
+            on_click=set_infinity_budget,
+            args=("salary_budget",),
+            use_container_width=True,
+        )
 
     squad = current_squad()
     transfer_used = sum(df.loc[p, "usd_transfer"] for p in squad.values())
@@ -540,4 +572,3 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
