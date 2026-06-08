@@ -42,6 +42,7 @@ GK_PLAYERS = df[df["flag_goalkeeper"] == 1]["name"].tolist()
 OUTFIELD_PLAYERS = df[df["flag_goalkeeper"] == 0]["name"].tolist()
 
 INFINITY_BUDGET = 999_999_999
+PYDO_PASSWORD = "ds@hcvn"
 TRANSFER_OPTIONS = list(range(5_000_000, 200_000_001, 5_000_000)) + [INFINITY_BUDGET]
 SALARY_OPTIONS = list(range(1_000_000, 100_000_001, 1_000_000)) + [INFINITY_BUDGET]
 
@@ -563,16 +564,24 @@ with right:
 
     st.divider()
 
+    pydo_password = st.text_input(
+        "PyDO password",
+        type="password",
+        key="pydo_password",
+    )
     if st.button("🚀 Let PyDO do its magic!", type="primary", use_container_width=True):
-        row = lookup_optimal(st.session_state.transfer_budget, st.session_state.salary_budget)
-        if row is None:
-            st.error("No feasible optimal team for these budgets.")
+        if pydo_password != PYDO_PASSWORD:
+            st.error("Incorrect password.")
         else:
-            apply_team(row)
-            st.success(
-                f"Loaded optimal squad — GF={row['GF_index']:.2f}, GA={row['GA_index']:.2f}"
-            )
-            st.rerun()
+            row = lookup_optimal(st.session_state.transfer_budget, st.session_state.salary_budget)
+            if row is None:
+                st.error("No feasible optimal team for these budgets.")
+            else:
+                apply_team(row)
+                st.success(
+                    f"Loaded optimal squad — GF={row['GF_index']:.2f}, GA={row['GA_index']:.2f}"
+                )
+                st.rerun()
 
 credit = 'Duy Cao, Home Credit Vietnam, 2026'
 statement = '"Of the 20,000 notable players for us to consider, I believe that there is a championship team of twenty-five people that we can afford, because everyone else in baseball undervalues them." Brand, Moneyball'
