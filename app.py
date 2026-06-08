@@ -266,16 +266,18 @@ st.markdown(
     .metric-big{font-size:34px;font-weight:700;}
     .over{color:#ff4d4f !important;}
     .ok{color:#52c41a;}
-    div[data-testid="stVerticalBlock"] > div:nth-of-type(3) button[kind="primary"],
-    div[data-testid="stVerticalBlock"] > div:nth-of-type(4) button[kind="primary"]{
-        font-size:28px !important;
+    .st-key-transfer_infinity button,
+    .st-key-salary_infinity button{
+        font-size:22px !important;
         font-weight:700 !important;
         line-height:1 !important;
-        min-height:44px;
+        min-height:40px;
+        padding-top:6px !important;
+        padding-bottom:6px !important;
     }
-    div[data-testid="stVerticalBlock"] > div:nth-of-type(3) button[kind="primary"] p,
-    div[data-testid="stVerticalBlock"] > div:nth-of-type(4) button[kind="primary"] p{
-        font-size:28px !important;
+    .st-key-transfer_infinity button p,
+    .st-key-salary_infinity button p{
+        font-size:22px !important;
         font-weight:700 !important;
         line-height:1 !important;
     }
