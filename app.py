@@ -88,7 +88,7 @@ def evaluate_squad(result, df=df):
     gk_defense = df.loc[result["GK"], "GK_defense"]
     GA = (0.50 * cb_defense + 0.20 * mid_defense + 0.30 * gk_defense) / 20
 
-    return {"objective": GF - GA, "GF": GF, "GA": GA}
+    return {"objective": GF + GA, "GF": GF, "GA": GA}
 
 
 def lookup_optimal(transfer_budget: int, salary_budget: int):
