@@ -15,6 +15,7 @@ import random
 import base64
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -43,6 +44,8 @@ OUTFIELD_PLAYERS = df[df["flag_goalkeeper"] == 0]["name"].tolist()
 
 INFINITY_BUDGET = 999_999_999
 PYDO_PASSWORD = "ds@hcvn"
+DONATION_PLAYER = "Phùng Thanh Độ"
+DONATION_AUDIO_URL = "https://github.com/caominhduy/pydo-hcvn-demo/raw/refs/heads/main/donate.mp3"
 TRANSFER_OPTIONS = list(range(5_000_000, 200_000_001, 5_000_000)) + [INFINITY_BUDGET]
 SALARY_OPTIONS = list(range(1_000_000, 100_000_001, 1_000_000)) + [INFINITY_BUDGET]
 
@@ -143,6 +146,15 @@ if "pending_squad" in st.session_state:
         st.session_state[f"slot_{s}"] = pending[s]
 
 
+# Keep a snapshot of the previous rendered squad.
+# This lets us detect a fresh dropdown selection instead of firing effects
+# repeatedly on every Streamlit rerun.
+if "_previous_squad" not in st.session_state:
+    st.session_state["_previous_squad"] = {
+        s: st.session_state[f"slot_{s}"] for s in SLOTS
+    }
+
+
 def apply_team(row):
     st.session_state["pending_squad"] = {s: row[s] for s in SLOTS}
 
@@ -205,6 +217,49 @@ def render_pydo_confetti():
         <div class="pydo-confetti">{pieces}</div>
         """,
         unsafe_allow_html=True,
+    )
+
+
+def render_donation_effect():
+    """Play the donation audio and launch Streamlit balloons.
+
+    `st.audio` does not autoplay reliably, so this uses a small HTML audio
+    element. Most browsers allow this immediately after a user interaction,
+    such as changing a selectbox, but some strict autoplay settings may still
+    require the user to allow sound for the page.
+    """
+    st.balloons()
+    components.html(
+        f"""
+        <audio autoplay>
+            <source src="{DONATION_AUDIO_URL}" type="audio/mpeg">
+        </audio>
+        <script>
+            const audio = document.querySelector("audio");
+            if (audio) {{
+                audio.volume = 1.0;
+                audio.play().catch(() => {{
+                    document.body.insertAdjacentHTML(
+                        "beforeend",
+                        `<div style="
+                            position: fixed;
+                            right: 16px;
+                            bottom: 16px;
+                            z-index: 999999;
+                            padding: 10px 14px;
+                            border-radius: 10px;
+                            background: rgba(20, 20, 20, 0.88);
+                            color: white;
+                            font: 14px sans-serif;
+                        ">
+                            🔊 Click anywhere on the page to allow the donation audio.
+                        </div>`
+                    );
+                }});
+            }}
+        </script>
+        """,
+        height=0,
     )
 
 
@@ -515,6 +570,17 @@ with left:
 
     # Duplicate guard
     squad = current_squad()
+
+    previous_squad = st.session_state.get("_previous_squad", {})
+    selected_donation_player = any(
+        squad.get(s) == DONATION_PLAYER and previous_squad.get(s) != DONATION_PLAYER
+        for s in SLOTS
+    )
+    st.session_state["_previous_squad"] = squad.copy()
+
+    if selected_donation_player:
+        render_donation_effect()
+
     if len(set(squad.values())) != len(squad):
         st.error("Duplicate players selected — please change them.")
 
