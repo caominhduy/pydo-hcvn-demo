@@ -565,7 +565,7 @@ with right:
     st.divider()
 
     pydo_password = st.text_input(
-        "PyDO password",
+        "Password",
         type="password",
         key="pydo_password",
     )
