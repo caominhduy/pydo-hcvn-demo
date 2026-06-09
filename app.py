@@ -605,7 +605,7 @@ with right:
         mcols = st.columns(3)
         mcols[0].metric("Objective", f"{scores['objective']:.3f}")
         mcols[1].metric("GF (attack)", f"{scores['GF']:.3f}")
-        mcols[2].metric("GA (defense)", f"-{scores['GA']:.3f}")
+        mcols[2].metric("GA (defense)", f"{scores['GA']:.3f}")
     except Exception as e:
         st.warning(f"Cannot evaluate: {e}")
 
