@@ -532,8 +532,8 @@ with right:
     bcols = st.columns(2)
     with bcols[0]:
         st.markdown("**Transfer**")
-        st.markdown(f"Budget: {money(st.session_state.transfer_budget)}")
-        st.markdown(f"Used: {money(transfer_used)}")
+        st.markdown(f"🎯 Budget: {money(st.session_state.transfer_budget)}")
+        st.markdown(f"💸 Used: {money(transfer_used)}")
         cls = "over" if t_over else "ok"
         st.markdown(
             f"<div class='metric-big {cls}'>Remaining: {t_remaining_label}</div>",
@@ -541,8 +541,8 @@ with right:
         )
     with bcols[1]:
         st.markdown("**Salary**")
-        st.markdown(f"Budget: {money(st.session_state.salary_budget)}")
-        st.markdown(f"Used: {money(salary_used)}")
+        st.markdown(f"🎯 Budget: {money(st.session_state.salary_budget)}")
+        st.markdown(f"💸 Used: {money(salary_used)}")
         cls = "over" if s_over else "ok"
         st.markdown(
             f"<div class='metric-big {cls}'>Remaining: {s_remaining_label}</div>",
@@ -564,6 +564,9 @@ with right:
 
     st.divider()
 
+    if st.session_state.pop("show_pydo_confetti", False):
+        st.balloons()
+
     pydo_password = st.text_input(
         "Password",
         type="password",
@@ -578,6 +581,7 @@ with right:
                 st.error("No feasible optimal team for these budgets.")
             else:
                 apply_team(row)
+                st.session_state["show_pydo_confetti"] = True
                 st.success(
                     f"Loaded optimal squad — GF={row['GF_index']:.2f}, GA={row['GA_index']:.2f}"
                 )
