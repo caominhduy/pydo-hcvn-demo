@@ -161,6 +161,53 @@ def set_infinity_budget(key: str):
     st.session_state[key] = INFINITY_BUDGET
 
 
+def render_pydo_confetti():
+    pieces = "".join(
+        f"<span style='--x:{x}px;--y:{y}px;--r:{r}deg;--c:{color};--d:{delay}ms'></span>"
+        for x, y, r, color, delay in [
+            (-86, -56, -34, "#ff4d4f", 0),
+            (-68, -78, 18, "#fadb14", 40),
+            (-44, -62, 47, "#52c41a", 80),
+            (-24, -90, -16, "#1677ff", 20),
+            (-8, -66, 31, "#ff85c0", 70),
+            (18, -86, -42, "#fa8c16", 30),
+            (36, -58, 12, "#13c2c2", 90),
+            (58, -76, -28, "#9254de", 50),
+            (82, -52, 39, "#73d13d", 110),
+            (-96, -30, 22, "#ffd666", 120),
+            (96, -34, -18, "#69c0ff", 140),
+            (0, -104, 8, "#ff7875", 60),
+        ]
+    )
+    st.markdown(
+        f"""
+        <style>
+        .pydo-confetti{{height:82px;margin-top:-78px;margin-bottom:-4px;position:relative;pointer-events:none;overflow:visible;}}
+        .pydo-confetti span{{
+            animation:pydo-burst 900ms ease-out both;
+            background:var(--c);
+            border-radius:2px;
+            bottom:10px;
+            height:9px;
+            left:50%;
+            opacity:0;
+            position:absolute;
+            transform:translate(-50%, 0) rotate(0deg);
+            width:6px;
+        }}
+        @keyframes pydo-burst{{
+            0%{{opacity:0;transform:translate(-50%, 0) scale(.6) rotate(0deg);}}
+            12%{{opacity:1;}}
+            100%{{opacity:0;transform:translate(calc(-50% + var(--x)), var(--y)) scale(1) rotate(var(--r));}}
+        }}
+        .pydo-confetti span{{animation-delay:var(--d);}}
+        </style>
+        <div class="pydo-confetti">{pieces}</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Helpers — option labels with stats tooltip
 # ---------------------------------------------------------------------------
@@ -564,8 +611,7 @@ with right:
 
     st.divider()
 
-    if st.session_state.pop("show_pydo_confetti", False):
-        st.balloons()
+    show_pydo_confetti = st.session_state.pop("show_pydo_confetti", False)
 
     pydo_password = st.text_input(
         "Password",
@@ -586,6 +632,8 @@ with right:
                     f"Loaded optimal squad — GF={row['GF_index']:.2f}, GA={row['GA_index']:.2f}"
                 )
                 st.rerun()
+    if show_pydo_confetti:
+        render_pydo_confetti()
 
 credit = 'Duy Cao, Home Credit Vietnam, 2026'
 statement = '"Of the 20,000 notable players for us to consider, I believe that there is a championship team of twenty-five people that we can afford, because everyone else in baseball undervalues them." Brand, Moneyball'
